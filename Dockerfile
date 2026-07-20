@@ -30,9 +30,9 @@ RUN apt-get update \
     && python3 -m venv /opt/venv \
     && rm -rf /var/lib/apt/lists/*
 
-# --- Dart (amd64 only — say the word if your host is arm64) ---
+# --- Dart ---
 RUN curl -fsSL https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/dart.gpg \
-    && echo 'deb [signed-by=/usr/share/keyrings/dart.gpg arch=amd64] https://storage.googleapis.com/download.dartlang.org/linux/debian stable main' > /etc/apt/sources.list.d/dart_stable.list \
+    && echo 'deb [signed-by=/usr/share/keyrings/dart.gpg arch=amd64,arm64] https://storage.googleapis.com/download.dartlang.org/linux/debian stable main' > /etc/apt/sources.list.d/dart_stable.list \
     && apt-get update \
     && apt-get install -y --no-install-recommends dart \
     && rm -rf /var/lib/apt/lists/*
