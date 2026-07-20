@@ -3,7 +3,7 @@ SHELL ["/bin/bash", "-c"]
 
 # Shared prerequisites
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl ca-certificates gnupg apt-transport-https \
+    && apt-get install -y --no-install-recommends curl ca-certificates gnupg apt-transport-https build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # --- Node.js, multi-version via nvm ---
@@ -36,6 +36,9 @@ RUN curl -fsSL https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dea
     && apt-get update \
     && apt-get install -y --no-install-recommends dart \
     && rm -rf /var/lib/apt/lists/*
+
+# --- Global npm packages ---
+RUN . "$NVM_DIR/nvm.sh" && npm install -g freebuff
 
 ENV PATH="/opt/node-default/bin:/opt/venv/bin:/usr/lib/dart/bin:${PATH}"
 
