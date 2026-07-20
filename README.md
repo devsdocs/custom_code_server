@@ -5,10 +5,13 @@ This is a custom build of [LinuxServer's code-server](https://github.com/linuxse
 ## Features
 
 - **Base Image:** `lscr.io/linuxserver/code-server:latest`
-- **Node.js:** Pre-configured with `nvm` (Node Version Manager). Includes Node v22, v24, and v26, with v24 set as the default.
-- **Python:** Includes Python 3, `pip`, and a global virtual environment pre-configured at `/opt/venv`.
-- **Dart:** Pre-installed Dart SDK.
-- **Permissions:** Custom initialization scripts ensure that `abc` (the runtime user) has correct ownership over `nvm` and `venv` directories, preventing permission denied errors inside the terminal.
+- **Build Tools:** `build-essential` (gcc, g++, make) for compiling native modules.
+- **Node.js:** Multi-version via `nvm`. Includes Node v22, v24, and v26, with v24 as default. Comes with [`freebuff`](https://www.npmjs.com/package/freebuff) installed globally.
+- **Python:** Multi-version via `pyenv`. Includes Python 3.12 and 3.13, with 3.13 as default.
+- **Flutter/Dart:** Multi-version via `fvm`. Includes Flutter stable (with bundled Dart SDK).
+- **Rust:** Multi-version via `rustup` with `rust-analyzer` included.
+- **Go:** Multi-version via `goenv`. Includes Go 1.25 and 1.26, with 1.26 as default.
+- **Permissions:** Custom init scripts ensure `abc` (the runtime user) owns all toolchain directories (`nvm`, `pyenv`, `fvm-cli`, `fvm`, `rustup`, `cargo`, `goenv`, `gopath`).
 
 ## Coolify Deployment Instructions
 

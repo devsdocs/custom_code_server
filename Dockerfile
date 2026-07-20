@@ -3,7 +3,10 @@ SHELL ["/bin/bash", "-c"]
 
 # Shared prerequisites
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl ca-certificates gnupg apt-transport-https build-essential \
+    && apt-get install -y --no-install-recommends \
+       curl ca-certificates gnupg apt-transport-https build-essential git \
+       libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev \
+       libncursesw5-dev xz-utils libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # --- Node.js, multi-version via nvm ---
@@ -20,27 +23,51 @@ RUN . "$NVM_DIR/nvm.sh" \
     && ln -s "$NVM_DIR/versions/node/$(nvm version default)/bin" /opt/node-default \
     && nvm cache clear
 
-# Load nvm (and `nvm use`) in every code-server terminal
-RUN echo '' >> /etc/bash.bashrc \
-    && echo '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"' >> /etc/bash.bashrc
+# --- Python, multi-version via pyenv ---
+ENV PYENV_ROOT=/opt/pyenv
+RUN curl -fsSL https://pyenv.run | bash
 
-# --- Python ---
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends python3 python3-pip python3-venv \
-    && python3 -m venv /opt/venv \
-    && rm -rf /var/lib/apt/lists/*
+# Add/remove Python versions here as you need them
+RUN export PATH="$PYENV_ROOT/bin:$PATH" && eval "$(pyenv init -)" \
+    && pyenv install 3.12 \
+    && pyenv install 3.13 \
+    && pyenv global 3.13
 
-# --- Dart ---
-RUN curl -fsSL https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/dart.gpg \
-    && echo 'deb [signed-by=/usr/share/keyrings/dart.gpg arch=amd64,arm64] https://storage.googleapis.com/download.dartlang.org/linux/debian stable main' > /etc/apt/sources.list.d/dart_stable.list \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends dart \
-    && rm -rf /var/lib/apt/lists/*
+# --- Flutter/Dart, multi-version via fvm ---
+ENV FVM_CACHE_PATH=/opt/fvm
+RUN FVM_INSTALL_DIR=/opt/fvm-cli curl -fsSL https://fvm.app/install.sh | bash
+
+# Add/remove Flutter versions here as you need them
+RUN fvm install stable && fvm global stable
+
+# --- Rust ---
+ENV RUSTUP_HOME=/opt/rustup CARGO_HOME=/opt/cargo
+RUN curl -fsSL https://sh.rustup.rs | sh -s -- -y --no-modify-path \
+    && /opt/cargo/bin/rustup component add rust-analyzer
+
+# --- Go, multi-version via goenv ---
+ENV GOENV_ROOT=/opt/goenv
+RUN git clone https://github.com/go-nv/goenv.git "$GOENV_ROOT"
+
+# Add/remove Go versions here as you need them
+RUN export PATH="$GOENV_ROOT/bin:$PATH" && eval "$(goenv init -)" \
+    && goenv install 1.25.12 \
+    && goenv install 1.26.5 \
+    && goenv global 1.26.5
+
+ENV GOPATH=/opt/gopath
 
 # --- Global npm packages ---
 RUN . "$NVM_DIR/nvm.sh" && npm install -g freebuff
 
-ENV PATH="/opt/node-default/bin:/opt/venv/bin:/usr/lib/dart/bin:${PATH}"
+# Load version managers in every code-server terminal
+RUN { echo ''; \
+      echo '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"'; \
+      echo 'export PATH="$PYENV_ROOT/bin:$PATH" && eval "$(pyenv init -)"'; \
+      echo 'export PATH="$GOENV_ROOT/bin:$PATH" && eval "$(goenv init -)"'; \
+    } >> /etc/bash.bashrc
+
+ENV PATH="/opt/node-default/bin:${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:/opt/fvm-cli/bin:${FVM_CACHE_PATH}/default/bin:/opt/cargo/bin:${GOENV_ROOT}/shims:${GOENV_ROOT}/bin:${GOPATH}/bin:${PATH}"
 
 COPY custom-cont-init.d/00-toolchain-perms.sh /custom-cont-init.d/00-toolchain-perms.sh
 RUN chmod +x /custom-cont-init.d/00-toolchain-perms.sh
