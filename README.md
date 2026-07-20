@@ -22,13 +22,13 @@ This configuration is ready to be deployed as a Docker Compose application in Co
 5. When prompted for the build pack, select **Docker Compose**.
 
 ### 2. Environment Variables
-Coolify will automatically parse the `docker-compose.yaml` file. You should ensure that the following environment variables are correctly populated in the Coolify UI (under the Environment Variables tab of your service):
+Coolify will automatically parse the `docker-compose.yaml` file. Go to the **Environment Variables** tab of your service and set the following:
 
 - `PUID=1000` (Change if your host user ID is different)
 - `PGID=1000` (Change if your host group ID is different)
 - `TZ=Europe/Madrid` (Set to your local timezone)
-- `SERVICE_PASSWORD_64_PASSWORDCODESERVER` (Coolify usually auto-generates this. This acts as your login password for the code-server UI)
-- `SERVICE_PASSWORD_SUDOCODESERVER` (Coolify usually auto-generates this. This is the sudo password inside the container)
+- `SERVICE_PASSWORD_64_PASSWORDCODESERVER` — **You must set this manually.** This is your login password for the code-server UI. Coolify does not auto-generate service passwords for git-based deployments.
+- `SERVICE_PASSWORD_SUDOCODESERVER` — **You must set this manually.** This is the sudo password inside the container.
 
 *Note: Coolify's dynamic proxy will automatically handle routing the traffic for the `SERVICE_URL_CODESERVER_8443` variable without needing explicit port mappings in the compose file.*
 
@@ -36,4 +36,4 @@ Coolify will automatically parse the `docker-compose.yaml` file. You should ensu
 Once the configuration is reviewed, click **Deploy**. Coolify will build the Docker image locally on the server (which will take a few minutes as it downloads and installs Node, Python, and Dart) and start the container.
 
 ### 4. Access Code Server
-Click on the generated URL in the Coolify interface. You will be prompted for a password. Enter the value generated for `SERVICE_PASSWORD_64_PASSWORDCODESERVER`.
+Click on the generated URL in the Coolify interface. You will be prompted for a password. Enter the value you set for `SERVICE_PASSWORD_64_PASSWORDCODESERVER`.

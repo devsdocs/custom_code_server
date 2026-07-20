@@ -16,6 +16,7 @@ services:
       - DEFAULT_WORKSPACE=/config/workspace
     volumes:
       - 'code-server-config:/config'
+      - 'code-server-workspace:/config/workspace'
     healthcheck:
       test:
         - CMD
@@ -28,3 +29,4 @@ services:
 
 volumes:
   code-server-config:
+  code-server-workspace:
