@@ -29,4 +29,6 @@ services:
 
 volumes:
   code-server-config:
+    name: code-server-config
   code-server-workspace:
+    name: code-server-workspace
