@@ -38,7 +38,7 @@ ENV FVM_CACHE_PATH=/opt/fvm
 RUN FVM_INSTALL_DIR=/opt/fvm-cli curl -fsSL https://fvm.app/install.sh | bash
 
 # Add/remove Flutter versions here as you need them
-RUN fvm install stable && fvm global stable
+RUN export PATH="/opt/fvm-cli/bin:$PATH" && fvm install stable && fvm global stable
 
 # --- Rust ---
 ENV RUSTUP_HOME=/opt/rustup CARGO_HOME=/opt/cargo
