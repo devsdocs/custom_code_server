@@ -16,9 +16,7 @@ RUN mkdir -p "$NVM_DIR" \
 
 # Add/remove Node majors here as you need them
 RUN . "$NVM_DIR/nvm.sh" \
-    && nvm install 22 \
     && nvm install 24 \
-    && nvm install 26 \
     && nvm alias default 24 \
     && ln -s "$NVM_DIR/versions/node/$(nvm version default)/bin" /opt/node-default \
     && nvm cache clear
@@ -29,7 +27,6 @@ RUN curl -fsSL https://pyenv.run | bash
 
 # Add/remove Python versions here as you need them
 RUN export PATH="$PYENV_ROOT/bin:$PATH" && eval "$(pyenv init -)" \
-    && pyenv install 3.12 \
     && pyenv install 3.13 \
     && pyenv global 3.13
 
@@ -51,7 +48,6 @@ RUN git clone https://github.com/go-nv/goenv.git "$GOENV_ROOT"
 
 # Add/remove Go versions here as you need them
 RUN export PATH="$GOENV_ROOT/bin:$PATH" && eval "$(goenv init -)" \
-    && goenv install 1.25.12 \
     && goenv install 1.26.5 \
     && goenv global 1.26.5
 
