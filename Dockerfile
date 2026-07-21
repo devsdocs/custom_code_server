@@ -26,7 +26,11 @@ ENV PYENV_ROOT=/opt/pyenv
 RUN curl -fsSL https://pyenv.run | bash
 
 # Add/remove Python versions here as you need them
+# Using MAKEOPTS="-j$(nproc)" speeds up Python compilation to avoid Coolify deployment timeouts.
+# Note: If your server has low RAM (e.g., <2GB), this might cause an Out-Of-Memory (OOM) error. 
+# If that happens, change it to MAKEOPTS="-j1" to reduce memory usage.
 RUN export PATH="$PYENV_ROOT/bin:$PATH" && eval "$(pyenv init -)" \
+    && export MAKEOPTS="-j$(nproc)" \
     && pyenv install 3.13 \
     && pyenv global 3.13
 
