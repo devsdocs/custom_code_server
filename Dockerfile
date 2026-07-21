@@ -56,7 +56,7 @@ RUN export PATH="$GOENV_ROOT/bin:$PATH" && eval "$(goenv init -)" \
     && goenv global 1.26.5
 
 ENV GOPATH=/opt/gopath
-
+RUN mkdir -p "$GOPATH"
 # --- Global npm packages ---
 RUN . "$NVM_DIR/nvm.sh" && npm install -g freebuff
 
