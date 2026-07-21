@@ -65,11 +65,12 @@ RUN mkdir -p "$GOPATH"
 # --- Global npm packages ---
 RUN . "$NVM_DIR/nvm.sh" && npm install -g freebuff
 
-# Load version managers in every code-server terminal
+# Load version managers in every code-server terminal using lazy-loading for instant startup
 RUN { echo ''; \
-      echo '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"'; \
-      echo 'export PATH="$PYENV_ROOT/bin:$PATH" && eval "$(pyenv init -)"'; \
-      echo 'export PATH="$GOENV_ROOT/bin:$PATH" && eval "$(goenv init -)"'; \
+      echo 'export PATH="/opt/node-default/bin:$PYENV_ROOT/shims:$PYENV_ROOT/bin:$GOENV_ROOT/shims:$GOENV_ROOT/bin:$PATH"'; \
+      echo 'nvm() { unset -f nvm; [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"; nvm "$@"; }'; \
+      echo 'pyenv() { unset -f pyenv; eval "$(command pyenv init -)"; pyenv "$@"; }'; \
+      echo 'goenv() { unset -f goenv; eval "$(command goenv init -)"; goenv "$@"; }'; \
     } >> /etc/bash.bashrc
 
 ENV PATH="${PATH}:/opt/node-default/bin:${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:/opt/fvm-cli/bin:${FVM_CACHE_PATH}/default/bin:/opt/cargo/bin:${GOENV_ROOT}/shims:${GOENV_ROOT}/bin:${GOPATH}/bin"
