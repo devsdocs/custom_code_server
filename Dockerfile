@@ -72,7 +72,7 @@ RUN { echo ''; \
       echo 'export PATH="$GOENV_ROOT/bin:$PATH" && eval "$(goenv init -)"'; \
     } >> /etc/bash.bashrc
 
-ENV PATH="/opt/node-default/bin:${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:/opt/fvm-cli/bin:${FVM_CACHE_PATH}/default/bin:/opt/cargo/bin:${GOENV_ROOT}/shims:${GOENV_ROOT}/bin:${GOPATH}/bin:${PATH}"
+ENV PATH="${PATH}:/opt/node-default/bin:${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:/opt/fvm-cli/bin:${FVM_CACHE_PATH}/default/bin:/opt/cargo/bin:${GOENV_ROOT}/shims:${GOENV_ROOT}/bin:${GOPATH}/bin"
 
 COPY custom-cont-init.d/00-toolchain-perms.sh /custom-cont-init.d/00-toolchain-perms.sh
 RUN chmod +x /custom-cont-init.d/00-toolchain-perms.sh
