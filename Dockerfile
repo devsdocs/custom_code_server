@@ -4,7 +4,7 @@ SHELL ["/bin/bash", "-c"]
 # Shared prerequisites
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-       curl ca-certificates gnupg apt-transport-https build-essential git \
+       curl unzip ca-certificates gnupg apt-transport-https build-essential git \
        libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev \
        libncursesw5-dev xz-utils libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
     && rm -rf /var/lib/apt/lists/*
