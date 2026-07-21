@@ -36,7 +36,7 @@ RUN export PATH="$PYENV_ROOT/bin:$PATH" && eval "$(pyenv init -)" \
 
 # --- Flutter/Dart, multi-version via fvm ---
 ENV FVM_CACHE_PATH=/opt/fvm
-RUN FVM_INSTALL_DIR=/opt/fvm-cli curl -fsSL https://fvm.app/install.sh | bash
+RUN curl -fsSL https://fvm.app/install.sh | FVM_INSTALL_DIR=/opt/fvm-cli bash
 
 # Add/remove Flutter versions here as you need them
 RUN export PATH="/opt/fvm-cli/bin:$PATH" && fvm install stable && fvm global stable
